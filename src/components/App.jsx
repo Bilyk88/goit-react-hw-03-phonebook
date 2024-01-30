@@ -5,11 +5,29 @@ import initialContacts from '../contacts.json';
 import { Filter } from './Filter/Filter';
 import { ContactForm } from './ContactForm/ContactForm';
 
+const storageKey = 'saved-contacts';
+
 export class App extends Component {
   state = {
     contacts: initialContacts,
     filter: '',
   };
+
+  componentDidMount() {
+    const savedContacts = window.localStorage.getItem(storageKey);
+    if (savedContacts !== null) {
+      this.setState({ contacts: JSON.parse(savedContacts) });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+      window.localStorage.setItem(
+        storageKey,
+        JSON.stringify(this.state.contacts)
+      );
+    }
+  }
 
   updateFilter = newFilter => {
     this.setState({ filter: newFilter });
